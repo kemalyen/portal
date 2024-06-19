@@ -10,27 +10,21 @@ import { Head, Link, router } from "@inertiajs/react";
 import TableHeading from "@/Components/TableHeading";
 
 export default function Index({ auth, products, queryParams = null, success }) {
-
- 
     queryParams = queryParams || {};
+ 
     const searchFieldChanged = (name, value) => {
 
         console.log(name, value);
         if (value) {
-            //queryParams[name] = value;
-
+            let filter = queryParams.filter || {};
+            filter[name] = value;
             queryParams = {
-                "filter": {
-                  name : value
-                }
+                filter
               }
-
-              
         } else {
-            delete queryParams[name];
+            delete queryParams.filter[name];
         }
       
-
         console.log(queryParams);
         router.get(route("products.index"), queryParams);
     };
@@ -42,17 +36,19 @@ export default function Index({ auth, products, queryParams = null, success }) {
     };
 
     const sortChanged = (name) => {
-        if (name === queryParams.sort_field) {
+
+        console.log(name);
+        if (name === queryParams.sort) {
             if (queryParams.sort_direction === "asc") {
-                queryParams.sort_direction = "desc";
+                queryParams.sort_direction = "-";
             } else {
-                queryParams.sort_direction = "asc";
+                queryParams.sort_direction = "";
             }
         } else {
-            queryParams.sort_field = name;
-            queryParams.sort_direction = "asc";
+            queryParams.sort =  queryParams.sort_direction . name;
+
         }
-        router.get(route("product.index"), queryParams);
+        router.get(route("products.index"), queryParams);
     };
 
     const deleteproduct = (product) => {
@@ -108,25 +104,19 @@ export default function Index({ auth, products, queryParams = null, success }) {
 
                                             <TableHeading
                                                 name="name"
-                                                sort_field={queryParams.sort_field}
+                                                sort={queryParams.sort}
                                                 sort_direction={queryParams.sort_direction}
                                                 sortChanged={sortChanged}
                                             >
                                                 Name
                                             </TableHeading>
 
-                                            <TableHeading
-                                                name="status"
-                                                sort_field={queryParams.sort_field}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
-                                            >
-                                                Status
-                                            </TableHeading>
+                                            <th className="px-3 py-3">Status</th>
+                                             
 
                                             <TableHeading
                                                 name="publishedAt"
-                                                sort_field={queryParams.sort_field}
+                                                sort={queryParams.sort}
                                                 sort_direction={queryParams.sort_direction}
                                                 sortChanged={sortChanged}
                                             >
@@ -143,7 +133,7 @@ export default function Index({ auth, products, queryParams = null, success }) {
                                             <th className="px-3 py-3">
                                                 <TextInput
                                                     className="w-full"
-                                                    defaultValue={queryParams.sku}
+                                                    defaultValue={queryParams.filter?.sku}
                                                     placeholder="SKU"
                                                     onBlur={(e) =>
                                                         searchFieldChanged("sku", e.target.value)
@@ -155,10 +145,10 @@ export default function Index({ auth, products, queryParams = null, success }) {
                                             <th className="px-3 py-3">
                                                 <TextInput
                                                     className="w-full"
-                                                    defaultValue={queryParams.barcode}
+                                                    defaultValue={queryParams.filter?.barcode}
                                                     placeholder="Barcode"
                                                     onBlur={(e) =>
-                                                        searchFieldChanged("name", e.target.value)
+                                                        searchFieldChanged("barcode", e.target.value)
                                                     }
                                                     onKeyPress={(e) => onKeyPress("barcode", e)}
                                                 />
@@ -167,7 +157,7 @@ export default function Index({ auth, products, queryParams = null, success }) {
                                             <th className="px-3 py-3">
                                                 <TextInput
                                                     className="w-full"
-                                                    defaultValue={queryParams.name}
+                                                    defaultValue={queryParams.filter?.name}
                                                     placeholder="product Name"
                                                     onBlur={(e) =>
                                                         searchFieldChanged("name", e.target.value)
@@ -178,15 +168,15 @@ export default function Index({ auth, products, queryParams = null, success }) {
                                             <th className="px-3 py-3">
                                                 <SelectInput
                                                     className="w-full"
-                                                    defaultValue={queryParams.status}
+                                                    defaultValue={queryParams.filter?.status}
                                                     onChange={(e) =>
                                                         searchFieldChanged("status", e.target.value)
                                                     }
                                                 >
                                                     <option value="">Select Status</option>
-                                                    <option value="pending">Pending</option>
-                                                    <option value="in_progress">In Progress</option>
-                                                    <option value="completed">Completed</option>
+                                                    <option value="P">Pending</option>
+                                                    <option value="A">Active</option>
+                                                    <option value="X">Cancelled</option>
                                                 </SelectInput>
                                             </th>
                                             <th className="px-3 py-3"></th>

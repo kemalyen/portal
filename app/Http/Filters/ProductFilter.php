@@ -27,11 +27,7 @@ class ProductFilter extends QueryFilter {
     public function include($value) {
         return $this->builder->with($value);
     }
-
-    public function status($value) {
-        return $this->builder->whereIn('status', explode(',', $value));
-    }
-
+ 
     public function name($value) {
         $likeStr = str_replace('*', '%', $value);
         return $this->builder->where('name', 'like', $likeStr);
@@ -40,6 +36,16 @@ class ProductFilter extends QueryFilter {
     public function sku($value) {
         $likeStr = str_replace('*', '%', $value);
         return $this->builder->where('sku', 'like', $likeStr);
+    }
+
+    public function barcode($value) {
+        $likeStr = str_replace('*', '%', $value);
+        return $this->builder->where('barcode', 'like', $likeStr);
+    }
+
+
+    public function status($value) {
+        return $this->builder->where('status', $value);
     }
 
     public function category($value) {
