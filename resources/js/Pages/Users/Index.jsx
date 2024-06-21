@@ -9,9 +9,11 @@ import {
 import { Head, Link, router } from "@inertiajs/react";
 import TableHeading from "@/Components/TableHeading";
 
-export default function Index({ auth, products, queryParams = null, success }) {
+export default function Index({ auth, users, customers, queryParams = null, success }) {
     queryParams = queryParams || {};
 
+
+    console.log(customers)
     const searchFieldChanged = (name, value) => {
 
         if (value) {
@@ -24,7 +26,7 @@ export default function Index({ auth, products, queryParams = null, success }) {
             delete queryParams.filter[name];
         }
 
-        router.get(route("products.index"), queryParams);
+        router.get(route("users.index"), queryParams);
     };
 
     const onKeyPress = (name, e) => {
@@ -44,7 +46,7 @@ export default function Index({ auth, products, queryParams = null, success }) {
             queryParams.sort_field = name;
             queryParams.sort_direction = "asc";
         }
-        router.get(route("products.index"), queryParams);
+        router.get(route("users.index"), queryParams);
     };
 
 
@@ -54,13 +56,13 @@ export default function Index({ auth, products, queryParams = null, success }) {
             header={
                 <div className="flex justify-between items-center">
                     <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                        products
+                    users
                     </h2>
  
                 </div>
             }
         >
-            <Head title="Products" />
+            <Head title="Users" />
 
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -75,23 +77,15 @@ export default function Index({ auth, products, queryParams = null, success }) {
                                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                         <tr className="text-nowrap">
-                                            <TableHeading name="sku"
+                                            <TableHeading name="id"
                                                 sort={queryParams.sort}
                                                 sort_direction={queryParams.sort_direction}
                                                 sortChanged={sortChanged}
                                             >
-                                                SKU
+                                                Id
                                             </TableHeading>
 
-                                            <TableHeading
-                                                sort={queryParams.sort}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
-                                                name="barcode"
-                                            >
-                                                Barcode
-                                            </TableHeading>
-
+                                          
                                             <TableHeading
                                                 name="name"
                                                 sort={queryParams.sort}
@@ -101,117 +95,114 @@ export default function Index({ auth, products, queryParams = null, success }) {
                                                 Name
                                             </TableHeading>
 
-                                            <th className="px-3 py-3">Status</th>
-
 
                                             <TableHeading
-                                                name="publishedAt"
+                                                sort={queryParams.sort}
+                                                sort_direction={queryParams.sort_direction}
+                                                sortChanged={sortChanged}
+                                                name="email"
+                                            >
+                                                Email
+                                            </TableHeading>
+
+                                            <TableHeading
+                                                name="customer_name"
                                                 sort={queryParams.sort}
                                                 sort_direction={queryParams.sort_direction}
                                                 sortChanged={sortChanged}
                                             >
-                                                Published Date
+                                                Customer Name
                                             </TableHeading>
-
-                                            <th className="px-3 py-3">Price</th>
-                                            <th className="px-3 py-3">Quantity</th>
+ 
+                                            <th className="px-3 py-3">Roles</th>
 
                                         </tr>
                                     </thead>
                                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 border-b-2 border-gray-500">
                                         <tr className="text-nowrap">
                                             <th className="px-3 py-3">
-                                                <TextInput
-                                                    className="w-full"
-                                                    defaultValue={queryParams.filter?.sku}
-                                                    placeholder="SKU"
-                                                    onBlur={(e) =>
-                                                        searchFieldChanged("sku", e.target.value)
-                                                    }
-                                                    onKeyPress={(e) => onKeyPress("sku", e)}
-                                                />
-
-                                            </th>
-                                            <th className="px-3 py-3">
-                                                <TextInput
-                                                    className="w-full"
-                                                    defaultValue={queryParams.filter?.barcode}
-                                                    placeholder="Barcode"
-                                                    onBlur={(e) =>
-                                                        searchFieldChanged("barcode", e.target.value)
-                                                    }
-                                                    onKeyPress={(e) => onKeyPress("barcode", e)}
-                                                />
+                                                
 
                                             </th>
                                             <th className="px-3 py-3">
                                                 <TextInput
                                                     className="w-full"
                                                     defaultValue={queryParams.filter?.name}
-                                                    placeholder="product Name"
+                                                    placeholder="Name"
                                                     onBlur={(e) =>
                                                         searchFieldChanged("name", e.target.value)
                                                     }
                                                     onKeyPress={(e) => onKeyPress("name", e)}
                                                 />
+
+                                            </th>
+                                            <th className="px-3 py-3">
+                                                <TextInput
+                                                    className="w-full"
+                                                    defaultValue={queryParams.filter?.email}
+                                                    placeholder="Email"
+                                                    onBlur={(e) =>
+                                                        searchFieldChanged("email", e.target.value)
+                                                    }
+                                                    onKeyPress={(e) => onKeyPress("email", e)}
+                                                />
                                             </th>
                                             <th className="px-3 py-3">
                                                 <SelectInput
                                                     className="w-full"
-                                                    defaultValue={queryParams.filter?.status}
+                                                    defaultValue={queryParams.filter?.customer_id}
                                                     onChange={(e) =>
-                                                        searchFieldChanged("status", e.target.value)
+                                                        searchFieldChanged("customer_id", e.target.value)
                                                     }
                                                 >
-                                                    <option value="">Select Status</option>
-                                                    <option value="P">Pending</option>
-                                                    <option value="A">Active</option>
-                                                    <option value="X">Cancelled</option>
+                                                    <option value=""> - - - - </option>
+                                                    {customers.map((customer) => (
+                                                        <option key={customer.id} value={customer.id}>
+                                                            {customer.name}
+                                                        </option>
+                                                    ))}
+                                                    
                                                 </SelectInput>
                                             </th>
-                                            <th className="px-3 py-3"></th>
-                                            <th className="px-3 py-3"></th>
-                                            <th className="px-3 py-3"></th>
+                                            <th className="px-3 py-3">
+                                                <SelectInput
+                                                    className="w-full"
+                                                    defaultValue={queryParams.filter?.roles}
+                                                    onChange={(e) =>
+                                                        searchFieldChanged("roles", e.target.value)
+                                                    }
+                                                >
+                                                    <option value="">Select roles</option>
+                                                    <option value="User">User</option>
+                                                    <option value="Manager">Manager</option>
+  
+                                                </SelectInput>
+                                            </th>
 
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {products.data.map((product) => (
+                                        {users.data.map((user) => (
                                             <tr
                                                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                                                key={product.id}
+                                                key={user.id}
                                             >
-                                                <td className="px-3 py-2">{product.attributes.sku}</td>
-                                                <td className="px-3 py-2">{product.attributes.barcode}</td>
-                                                <th className="px-3 py-2">
-                                                    
-                                                        {product.attributes.name}
-                                                   
-                                                </th>
-                                                <td className="px-3 py-2">
-                                                    <span
-                                                        className={
-                                                            "px-2 py-1 rounded text-white " +
-                                                            PRODUCT_STATUS_CLASS_MAP[product.attributes.status]
-                                                        }
-                                                    >
-                                                        {PRODUCT_STATUS_TEXT_MAP[product.attributes.status]}
-                                                    </span>
-                                                </td>
-                                                <td className="px-3 py-2 text-nowrap">
-                                                    {product.attributes.publishedAt}
-                                                </td>
-                                                <td className="px-3 py-2 ">
-                                                    {product.attributes.price}
-                                                </td>
-                                                <td className="px-3 py-2">{product.attributes.quantity}</td>
 
+                                                <td className="px-3 py-2">{user.id}</td>
+                                                <th className="px-3 py-2">{user.attributes.name}</th>
+                                                <th className="px-3 py-2">{user.attributes.email}</th>
+                                                <td className="px-3 py-2 text-nowrap">
+                                                    {user.attributes.customer_name}
+                                                </td>
+                                               <td className="px-3 py-2 text-nowrap">
+                                                    {user.attributes.roles}
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
                             </div>
-                            <Pagination links={products.meta.links} />
+                            <Pagination links={users.meta.links} />
                         </div>
                     </div>
                 </div>

@@ -31,22 +31,6 @@ class ProductController extends Controller
      */
     public function index(ProductFilter $filter)
     {
-/*         $query = Product::query();
-
-        $sortField = request("sort_field", 'created_at');
-        $sortDirection = request("sort_direction", "desc");
-
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
-        }
-        if (request("status")) {
-            $query->where("status", request("status"));
-        }
-
-        $products = $query->orderBy($sortField, $sortDirection)
-            ->paginate(10)
-            ->onEachSide(1); */
-
         return inertia("Products/Index", [
             "products" => ProductResource::collection(Product::filter($filter)->paginate(10)),
             'queryParams' => request()->query() ?: null,
@@ -84,29 +68,9 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Product $project)
     {
-        $query = $project->tasks();
-
-        $sortField = request("sort_field", 'created_at');
-        $sortDirection = request("sort_direction", "desc");
-
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
-        }
-        if (request("status")) {
-            $query->where("status", request("status"));
-        }
-
-        $tasks = $query->orderBy($sortField, $sortDirection)
-            ->paginate(10)
-            ->onEachSide(1);
-        return inertia('Project/Show', [
-            'project' => new ProjectResource($project),
-            "tasks" => TaskResource::collection($tasks),
-            'queryParams' => request()->query() ?: null,
-            'success' => session('success'),
-        ]);
+         
     }
 
     /**

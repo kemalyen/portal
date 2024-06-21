@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\ApiController;
 use App\Http\Filters\CategoryFilter;
 use App\Http\Requests\CategoryStoreRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoryController extends ApiController
+class CategoryController extends Controller
 {
     /**
      * List all categories
